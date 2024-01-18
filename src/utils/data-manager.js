@@ -169,8 +169,7 @@ export default class DataManager {
       (usedWidthPx !== 0 ? `${usedWidthPx}px` : '0px') +
       (usedWidthNotPx.length > 0 ? ' - ' + usedWidthNotPx.join(' - ') : '');
     undefWidthCols.forEach((columnDef) => {
-      columnDef.tableData.width =
-        columnDef.tableData.initialWidth = `calc((100% - ${usedWidth}) / ${undefWidthCols.length})`;
+      columnDef.tableData.width = columnDef.tableData.initialWidth = `calc((100% - ${usedWidth}) / ${undefWidthCols.length})`;
     });
 
     this.tableStyleWidth =
@@ -780,6 +779,10 @@ export default class DataManager {
   }
 
   getFieldValue = (rowData, columnDef, lookup = true) => {
+    if (columnDef.render) {
+      return columnDef.render(rowData);
+    }
+
     let value =
       typeof rowData[columnDef.field] !== 'undefined'
         ? rowData[columnDef.field]
@@ -924,12 +927,7 @@ export default class DataManager {
   // =====================================================================================================
 
   filterData = () => {
-    this.searched =
-      this.grouped =
-      this.treefied =
-      this.sorted =
-      this.paged =
-        false;
+    this.searched = this.grouped = this.treefied = this.sorted = this.paged = false;
 
     this.filteredData = [...this.data];
 
